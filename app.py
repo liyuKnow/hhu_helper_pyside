@@ -26,12 +26,12 @@ def main ():
     repo = UserRepository(db)
 
     # Run your application code here
-    ...
-
     app = QApplication(sys.argv)
-    login_screen = LoginScreen()
+
+    login_screen = LoginScreen(repo)
     login_screen.show()
-    sys.exit(app.exec_())
+
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

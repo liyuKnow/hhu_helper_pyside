@@ -1,19 +1,23 @@
 import sys
-from PySide6.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout)
+from PySide6.QtWidgets import (QApplication, QWidget, QMessageBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout)
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
 
+from src.models.user_repository import UserRepository
+from .home import HomeScreen
 
 class LoginScreen(QWidget):
-    def __init__(self):
+    def __init__(self, repo: UserRepository):
         super().__init__()
+        self.repo = repo
         self.setWindowTitle("HHU Helper")
         self.setStyleSheet("background-color: #f2f2f2;")
+
+        # # LAYOUT
+        # self.create_layout()
+
         # COMPONENT WIDGETS
         self.create_UI()
-
-        # LAYOUT
-        self.create_layout()
 
         # SCREEN SIZE
         self.setFixedSize(800, 500)
@@ -67,7 +71,7 @@ class LoginScreen(QWidget):
         login_button.setText("Login")
         login_button.setGeometry(160, 270, 80, 30)
         login_button.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
-        login_button.clicked.connect(self.login)
+        login_button.clicked.connect(self.onLogin)
 
     def create_layout(self):
         # CREATE MAIN LAYOUT
@@ -103,6 +107,17 @@ class LoginScreen(QWidget):
 
     # ACTION BINDINGS
     def onLogin(self):
-        # Add your login logic here
-        print("Login button clicked")
-    
+        username = self.username_input.text()
+        password = self.password_input.text()
+        if self.repo.login_user(username, password):
+            print("if yes block")
+            # Show the main application window, close self
+            home_screen = HomeScreen()
+            home_screen.show()
+            self.close()
+            
+        else:
+            print("if no block")
+            # Display an error message to the user
+            # error_label.setText("Invalid username or password")
+            QMessageBox.warning(self, "Login Failed", "Invalid username or password")

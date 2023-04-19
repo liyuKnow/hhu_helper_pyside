@@ -13,7 +13,9 @@ class UserRepository(GenericRepository):
         item = {"username": username, "password": hashed_password}
         return self.add_item("User", columns, item)
 
-    def get_user_by_username(self, username: str) -> Dict[str, str]:
-        columns = {"id": "INTEGER", "username": "TEXT", "password": "TEXT"}
-        items = self.get_items("User", columns, page=1, page_size=1, where_clause="WHERE username=?", where_params=(username,))
-        return items[0] if items else None
+    def login_user(self, username: str, password: str) -> bool:
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        query = f"SELECT * FROM User WHERE username = ? AND password = ?"
+        params = (username, hashed_password)
+        result = self.db.execute_query(query, params)
+        return len(result) > 0
