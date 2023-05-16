@@ -10,6 +10,10 @@ class User(QObject):
         usernameChanged (Signal): A signal emitted when the 'username' property changes.
         passwordChanged (Signal): A signal emitted when the 'password' property changes.
     """
+    idChanged = Signal(int)
+    usernameChanged = Signal(str)
+    passwordChanged = Signal(str)
+
 
     def __init__(self, username="", password="", id=None):
         """
@@ -25,9 +29,7 @@ class User(QObject):
         self._username = username
         self._password = password
 
-    idChanged = Signal()
-    usernameChanged = Signal()
-    passwordChanged = Signal()
+    
 
     @Property(int, notify=idChanged)
     def id(self):

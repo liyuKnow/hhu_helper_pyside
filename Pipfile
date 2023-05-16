@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 pyside6 = "*"
+tabulate = "*"
+pipreqs = "*"
+pyinstaller = "*"
 
 [dev-packages]
 

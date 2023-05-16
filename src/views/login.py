@@ -1,123 +1,189 @@
 import sys
-from PySide6.QtWidgets import (QApplication, QWidget, QMessageBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout)
-from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import (QApplication, QSpacerItem, QWidget, QMessageBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy)
+from PySide6.QtGui import QPixmap, QFont
 from PySide6.QtCore import Qt
 
 from src.models.user_repository import UserRepository
 from .home import HomeScreen
 
+
+import sys
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QLineEdit, QPushButton, QSizePolicy, QVBoxLayout, QWidget
+
+# class LoginScreen(QWidget):
+#     def __init__(self, repo:UserRepository):
+#         super().__init__()
+#         self.repo = repo
+#         # Create the main layout
+#         layout = QVBoxLayout(self)
+
+#         # Create the login card
+#         card = QWidget(self)
+#         card.setObjectName("card")
+#         card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+#         card_layout = QVBoxLayout(card)
+
+#         # Create the username field
+#         username_layout = QHBoxLayout()
+#         username_label = QLabel("Username:")
+#         username_label.setFont(QFont("Arial", 12))
+#         username_input = QLineEdit()
+#         username_input.setFont(QFont("Arial", 12))
+#         username_layout.addWidget(username_label)
+#         username_layout.addWidget(username_input)
+#         card_layout.addLayout(username_layout)
+
+#         # Create the password field
+#         password_layout = QHBoxLayout()
+#         password_label = QLabel("Password:")
+#         password_label.setFont(QFont("Arial", 12))
+#         password_input = QLineEdit()
+#         password_input.setFont(QFont("Arial", 12))
+#         password_input.setEchoMode(QLineEdit.Password)
+#         password_layout.addWidget(password_label)
+#         password_layout.addWidget(password_input)
+#         card_layout.addLayout(password_layout)
+
+#         # Create the login button
+#         login_button = QPushButton("Login")
+#         login_button.setFont(QFont("Arial", 12))
+#         card_layout.addWidget(login_button)
+
+#         # Add the card to the main layout with a margin
+#         layout.addStretch()
+#         layout.addWidget(card, alignment=Qt.AlignCenter)
+#         layout.addStretch()
+        
+#         # Set the styles for the card and its children
+#         self.setStyleSheet("""
+#             #card {
+#                 background-color: #FFFFFF;
+#                 border-radius: 5px;
+#                 margin: 20px;
+#                 padding: 20px;
+#             }
+#             QLabel {
+#                 color: #000000;
+#             }
+#             QLineEdit {
+#                 border: 2px solid #CCCCCC;
+#                 border-radius: 5px;
+#                 padding: 5px;
+#             }
+#             QPushButton {
+#                 background-color: #007ACC;
+#                 border-radius: 5px;
+#                 color: #FFFFFF;
+#                 padding: 5px 10px;
+#             }
+#             QPushButton:hover {
+#                 background-color: #005F8C;
+#             }
+#         """)
+
+
+
 class LoginScreen(QWidget):
-    def __init__(self, repo: UserRepository):
+    def __init__(self, repo:UserRepository):
         super().__init__()
         self.repo = repo
-        self.setWindowTitle("HHU Helper")
-        self.setStyleSheet("background-color: #f2f2f2;")
 
-        # # LAYOUT
-        # self.create_layout()
+        self.screenSettings()
+        self.setStyles()
 
-        # COMPONENT WIDGETS
-        self.create_UI()
+        # Create the main layout
+        layout = QVBoxLayout(self)
 
-        # SCREEN SIZE
-        self.setFixedSize(800, 500)
-        self.setMinimumSize(500, 300)
+        # Create the login card
+        card = QWidget(self)
+        card.setObjectName("card")
+        card_layout = QVBoxLayout(card)
 
-        # Logo
-    def create_UI(self):
-        self.create_logo()
-        self.create_company_name()
-        self.create_username_input()
-        self.create_password_input()
-        self.create_login_button()
-        self.create_layout()
-    
-    def create_logo(self):
-        # Company Logo
-        logo_label = QLabel(self)
-        logo_pixmap = QPixmap("public/images/eep-logo.png")
-        logo_label.setPixmap(logo_pixmap)
-        logo_label.setAlignment(Qt.AlignCenter)
-        logo_label.setGeometry(50, 20, 300, 100)
+        # Create the username group
+        username_widget = QWidget()
+        username_layout = QVBoxLayout(username_widget)
+        username_label = QLabel("Username:")
+        username_label.setFont(QFont("Arial", 12))
+        username_input = QLineEdit()
+        username_input.setFont(QFont("Arial", 12))
+        username_layout.addWidget(username_label)
+        username_layout.addWidget(username_input)
+        username_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        card_layout.addWidget(username_widget)
 
-    def create_company_name(self):
-        # Company Name
-        company_label = QLabel(self)
-        company_label.setText("Ethiopian Electric Utility")
-        company_label.setStyleSheet("font-size: 20px; font-weight: bold;")
-        company_label.setAlignment(Qt.AlignCenter)
-        company_label.setGeometry(50, 120, 300, 30)
+        # username_widget = QWidget(card)
+        # username_label = QLabel("Username:")
+        # username_label.setFont(QFont("Arial", 12))
+        # username_input = QLineEdit()
+        # username_input.setFont(QFont("Arial", 12))
+        # username_layout = QHBoxLayout(username_widget)
+        # username_layout.addWidget(username_label)
+        # username_layout.addWidget(username_input)
+        # card_layout.addWidget(username_widget)
 
-    def create_username_input(self):
-        # Username Input
-        username_label = QLabel(self)
-        username_label.setText("Username:")
-        username_label.setGeometry(50, 170, 100, 30)
-        username_input = QLineEdit(self)
-        username_input.setGeometry(160, 170, 190, 30)
+        # Create the username field
+        # username_label = QLabel("Username:")
+        # username_label.setFont(QFont("Arial", 12))
+        # username_input = QLineEdit()
+        # username_input.setFont(QFont("Arial", 12))
+        # card_layout.addWidget(username_label)
+        # card_layout.addWidget(username_input)
 
-    def create_password_input(self):
-        # Password Input
-        password_label = QLabel(self)
-        password_label.setText("Password:")
-        password_label.setGeometry(50, 220, 100, 30)
-        password_input = QLineEdit(self)
-        password_input.setGeometry(160, 220, 190, 30)
-        password_input.setEchoMode(QLineEdit.Password)
+        # Create the password field
+        # password_label = QLabel("Password:")
+        # password_label.setFont(QFont("Arial", 12))
+        # password_input = QLineEdit()
+        # password_input.setFont(QFont("Arial", 12))
+        # password_input.setEchoMode(QLineEdit.Password)
+        # card_layout.addWidget(password_label)
+        # card_layout.addWidget(password_input)
 
-    def create_login_button(self):
-        # Login Button
-        login_button = QPushButton(self)
-        login_button.setText("Login")
-        login_button.setGeometry(160, 270, 80, 30)
-        login_button.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
-        login_button.clicked.connect(self.onLogin)
+        # Create the login button
+        # login_button = QPushButton("Login")
+        # login_button.setFont(QFont("Arial", 12))
+        # card_layout.addWidget(login_button)
 
-    def create_layout(self):
-        # CREATE MAIN LAYOUT
-        self.main_layout = QVBoxLayout(self)
-        self.main_layout.setContentsMargins(0,0,0,0)
-        self.main_layout.setSpacing(0)
+        # Add the card to the main layout with a margin
+        layout.addStretch()
+        layout.addWidget(card, alignment=Qt.AlignCenter)
+        layout.addStretch()
         
-        # CONTAINER LAYOUT 
-        self.container_widget = QWidget(self)
-        self.container_widget.setStyleSheet('background-color: #f0f0f0')
-        self.container_layout = QVBoxLayout(self.container_widget)
-        self.container_layout.setContentsMargins(50,50,50,50)
-        self.container_layout.setSpacing(20)
+    def setStyles(self):
+        # Set the styles for the card and its children
+        self.setStyleSheet("""
+            #card {
+                min-width:300px;
+                min-height : 400px;
+                background-color: #696969;
+                border-radius: 5px;
+                margin: 20px;
+                padding: 20px;
+            }
+            QLabel {
+                color: #000000;
+            }
+            QLineEdit {
+                border: 2px solid #CCCCCC;
+                border-radius: 5px;
+                padding: 5px;
+            }
+            QPushButton {
+                background-color: #007ACC;
+                border-radius: 5px;
+                color: #FFFFFF;
+                padding: 5px 10px;
+            }
+            QPushButton:hover {
+                background-color: #005F8C;
+            }
+        """)
 
-        # ADD CONTAINER TO MAIN LAYOUT VBOX
-        self.main_layout.addWidget(self.container_widget)
+    def screenSettings(self):
+        # Title
+        self.setWindowTitle("HHU Helper")
+        # Screen Size
+        self.setMinimumSize(468,569)
+        self.setMaximumSize(960,540)
 
-        # CREATING LOGIN CARD
-        self.card_widget = QWidget(self.container_widget)
-        self.card_widget.setStyleSheet('background-color: #d0d0d0')
-        self.card_layout = QVBoxLayout(self.card_widget)
-        self.card_layout.setContentsMargins(20,20,20,20)
-        self.card_layout.setSpacing(10)
-        self.card_layout.setAlignment(Qt.AlignCenter)
-
-        # ADD CARD WIDGET TO CONTAINER LAYOUT
-        self.container_layout.addWidget(self.card_widget)
-
-        # TEST 
-        self.label = QLabel("Hello, World", self.card_widget)
-        self.label.setStyleSheet('font-size: 24px; font-weight:bold;')
-        self.card_layout.addWidget(self.label)
-
-    # ACTION BINDINGS
-    def onLogin(self):
-        username = self.username_input.text()
-        password = self.password_input.text()
-        if self.repo.login_user(username, password):
-            print("if yes block")
-            # Show the main application window, close self
-            home_screen = HomeScreen()
-            home_screen.show()
-            self.close()
-            
-        else:
-            print("if no block")
-            # Display an error message to the user
-            # error_label.setText("Invalid username or password")
-            QMessageBox.warning(self, "Login Failed", "Invalid username or password")
