@@ -8,6 +8,7 @@ pyside6 = "*"
 tabulate = "*"
 pipreqs = "*"
 pyinstaller = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 

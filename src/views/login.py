@@ -1,189 +1,136 @@
 import sys
-from PySide6.QtWidgets import (QApplication, QSpacerItem, QWidget, QMessageBox, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy)
-from PySide6.QtGui import QPixmap, QFont
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout , QLabel, QLineEdit, QPushButton, QHBoxLayout, QSpacerItem, QSizePolicy
+from PySide6.QtGui import  QIcon, QPalette, QColor, QPixmap
+from PySide6.QtCore import Signal,Slot,Qt
 
-from src.models.user_repository import UserRepository
-from .home import HomeScreen
+WINDOW_TITLE = "HHU Helper | Login"
 
+class UsernameField(QLineEdit):
+    def __init__(self):
+        super().__init__()
 
-import sys
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont
-from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QLineEdit, QPushButton, QSizePolicy, QVBoxLayout, QWidget
+        self.setPlaceholderText("Username")
+        self.setMinimumSize(375,36)
+        self.setMaximumSize(375,36)
 
-# class LoginScreen(QWidget):
-#     def __init__(self, repo:UserRepository):
-#         super().__init__()
-#         self.repo = repo
-#         # Create the main layout
-#         layout = QVBoxLayout(self)
+class PasswordField(QLineEdit):
+    def __init__(self):
+        super().__init__()
 
-#         # Create the login card
-#         card = QWidget(self)
-#         card.setObjectName("card")
-#         card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-#         card_layout = QVBoxLayout(card)
+        self.setPlaceholderText("Password")
+        self.setEchoMode(QLineEdit.Password)
+        self.setMinimumSize(375,36)
+        self.setMaximumSize(375,36)
 
-#         # Create the username field
-#         username_layout = QHBoxLayout()
-#         username_label = QLabel("Username:")
-#         username_label.setFont(QFont("Arial", 12))
-#         username_input = QLineEdit()
-#         username_input.setFont(QFont("Arial", 12))
-#         username_layout.addWidget(username_label)
-#         username_layout.addWidget(username_input)
-#         card_layout.addLayout(username_layout)
+class LoginButton(QPushButton):
+    def __init__(self):
+        super().__init__()
 
-#         # Create the password field
-#         password_layout = QHBoxLayout()
-#         password_label = QLabel("Password:")
-#         password_label.setFont(QFont("Arial", 12))
-#         password_input = QLineEdit()
-#         password_input.setFont(QFont("Arial", 12))
-#         password_input.setEchoMode(QLineEdit.Password)
-#         password_layout.addWidget(password_label)
-#         password_layout.addWidget(password_input)
-#         card_layout.addLayout(password_layout)
+        self.setText("Login")
+        self.setMinimumSize(375,40)
+        self.setMaximumSize(375,40)
 
-#         # Create the login button
-#         login_button = QPushButton("Login")
-#         login_button.setFont(QFont("Arial", 12))
-#         card_layout.addWidget(login_button)
+class LoginLayout(QVBoxLayout):
+    def __init__ (self)-> None:
+        super().__init__()
+        self.setAlignment(Qt.AlignCenter)
 
-#         # Add the card to the main layout with a margin
-#         layout.addStretch()
-#         layout.addWidget(card, alignment=Qt.AlignCenter)
-#         layout.addStretch()
+        # Add the logo and brand title to the layout
+        self.createLogo()
+
+        self.logoText()
+
+        # Add Username and Password Widgets directly
+        self.username_field = UsernameField()
+        self.password_field = PasswordField()
+        self.addWidget(self.username_field)
+        self.addWidget(self.password_field)
+    
+    def createLogo(self):
+        logo_label = QLabel()
+        logo_pixmap = QPixmap("./public/images/logo.png")
+        logo_label.setPixmap(logo_pixmap)
+        logo_label.setAlignment(Qt.AlignCenter)
+        logo_label.setWindowOpacity(0)
+        logo_label.setMinimumSize(400,100)
+        logo_label.setMaximumSize(400,100)
+        logo_label.setStyleSheet("background-color: transparent;")  # set the background color to transparent
         
-#         # Set the styles for the card and its children
-#         self.setStyleSheet("""
-#             #card {
-#                 background-color: #FFFFFF;
-#                 border-radius: 5px;
-#                 margin: 20px;
-#                 padding: 20px;
-#             }
-#             QLabel {
-#                 color: #000000;
-#             }
-#             QLineEdit {
-#                 border: 2px solid #CCCCCC;
-#                 border-radius: 5px;
-#                 padding: 5px;
-#             }
-#             QPushButton {
-#                 background-color: #007ACC;
-#                 border-radius: 5px;
-#                 color: #FFFFFF;
-#                 padding: 5px 10px;
-#             }
-#             QPushButton:hover {
-#                 background-color: #005F8C;
-#             }
-#         """)
+        
+        self.addWidget(logo_label)
 
+    def logoText(self):
+        brand_label = QLabel("የኢትዮጵያ ኤሌክትሪክ አገልገሎት")
+        brand_label.setAlignment(Qt.AlignCenter)
+        brand_label.setStyleSheet("color:#ff9f00;")
 
+        brand_label_en = QLabel("Ethiopian Electric Utility")
+        brand_label_en.setAlignment(Qt.AlignCenter)
+        brand_label_en.setStyleSheet("color:green;")
+
+        self.addWidget(brand_label)
+        self.addWidget(brand_label_en)
 
 class LoginScreen(QWidget):
-    def __init__(self, repo:UserRepository):
+    login_signal = Signal(str, str)
+
+    def __init__(self):
         super().__init__()
-        self.repo = repo
 
-        self.screenSettings()
-        self.setStyles()
-
-        # Create the main layout
-        layout = QVBoxLayout(self)
-
-        # Create the login card
-        card = QWidget(self)
-        card.setObjectName("card")
-        card_layout = QVBoxLayout(card)
-
-        # Create the username group
-        username_widget = QWidget()
-        username_layout = QVBoxLayout(username_widget)
-        username_label = QLabel("Username:")
-        username_label.setFont(QFont("Arial", 12))
-        username_input = QLineEdit()
-        username_input.setFont(QFont("Arial", 12))
-        username_layout.addWidget(username_label)
-        username_layout.addWidget(username_input)
-        username_layout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
-        card_layout.addWidget(username_widget)
-
-        # username_widget = QWidget(card)
-        # username_label = QLabel("Username:")
-        # username_label.setFont(QFont("Arial", 12))
-        # username_input = QLineEdit()
-        # username_input.setFont(QFont("Arial", 12))
-        # username_layout = QHBoxLayout(username_widget)
-        # username_layout.addWidget(username_label)
-        # username_layout.addWidget(username_input)
-        # card_layout.addWidget(username_widget)
-
-        # Create the username field
-        # username_label = QLabel("Username:")
-        # username_label.setFont(QFont("Arial", 12))
-        # username_input = QLineEdit()
-        # username_input.setFont(QFont("Arial", 12))
-        # card_layout.addWidget(username_label)
-        # card_layout.addWidget(username_input)
-
-        # Create the password field
-        # password_label = QLabel("Password:")
-        # password_label.setFont(QFont("Arial", 12))
-        # password_input = QLineEdit()
-        # password_input.setFont(QFont("Arial", 12))
-        # password_input.setEchoMode(QLineEdit.Password)
-        # card_layout.addWidget(password_label)
-        # card_layout.addWidget(password_input)
-
-        # Create the login button
-        # login_button = QPushButton("Login")
-        # login_button.setFont(QFont("Arial", 12))
-        # card_layout.addWidget(login_button)
-
-        # Add the card to the main layout with a margin
-        layout.addStretch()
-        layout.addWidget(card, alignment=Qt.AlignCenter)
-        layout.addStretch()
+        self.initGUI()
         
-    def setStyles(self):
-        # Set the styles for the card and its children
-        self.setStyleSheet("""
-            #card {
-                min-width:300px;
-                min-height : 400px;
-                background-color: #696969;
-                border-radius: 5px;
-                margin: 20px;
-                padding: 20px;
-            }
-            QLabel {
-                color: #000000;
-            }
-            QLineEdit {
-                border: 2px solid #CCCCCC;
-                border-radius: 5px;
-                padding: 5px;
-            }
-            QPushButton {
-                background-color: #007ACC;
-                border-radius: 5px;
-                color: #FFFFFF;
-                padding: 5px 10px;
-            }
-            QPushButton:hover {
-                background-color: #005F8C;
-            }
-        """)
+        # Create the layout
+        layout = LoginLayout()
+        self.setLayout(layout)
 
-    def screenSettings(self):
-        # Title
-        self.setWindowTitle("HHU Helper")
-        # Screen Size
-        self.setMinimumSize(468,569)
-        self.setMaximumSize(960,540)
+        # Add the login button to the layout
+        self.login_button = LoginButton()
+        layout.addWidget(self.login_button)
 
+        # Connect the login button signal to the login signal
+        self.login_button.clicked.connect(self.emit_login_signal)
+    
+    def initGUI(self):
+        self.setWindowTitle(" HHU Helper | Login")
+        # self.setWindowTitle("Ethiopian Electric Utility | HHU Helper - Login")
+
+        # Load the QSS or styling file
+        with open("./src/views/login_screen.qss", "r") as f:
+            self.setStyleSheet(f.read())
+
+        # Set size.
+        self.setFixedSize(600, 400)
+
+        # Set app icon
+        self.set_app_icon()
+
+        # Set bg image
+        self.set_background_img()
+
+
+    def set_app_icon(self):
+        appIcon = QIcon("./public/images/logo.png")
+        self.setWindowIcon(appIcon)
+
+    def set_background_img(self):
+        self.background = QLabel(self)
+        self.background.setPixmap(QPixmap("./public/images/grid-4.png"))
+        self.background.setScaledContents(True)
+        self.background.setGeometry(0, 0, self.width(), self.height())
+
+        # Set opacity and other properties on the image
+        self.background.setStyleSheet("background-color: green;")
+
+    def get_username(self) -> str:
+        return self.layout().username_field.text()
+
+    def get_password(self) -> str:
+        return self.layout().password_field.text()
+
+    @Slot()
+    def emit_login_signal(self):
+        username = self.get_username()
+        password = self.get_password()
+
+        # Emit the login signal
+        self.login_signal.emit(username, password)
